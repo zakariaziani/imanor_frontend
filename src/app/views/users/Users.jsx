@@ -31,6 +31,7 @@ const Users = () => {
                     variant="contained"
                     color="secondary"
                     className={classes.button}
+                    href="/nouveauUtilisateur"
                 >
                     Ajouter
             </Button>

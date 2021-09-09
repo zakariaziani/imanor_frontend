@@ -37,7 +37,7 @@ const TopSellingTable = () => {
     return (
         <Card elevation={3} className="pt-5 mb-6">
             <div className="flex justify-between items-center px-6 mb-3">
-                <span className="card-title">liste  des couriers</span>
+                <span className="card-title">liste  des courriers</span>
             </div>
             <div className="overflow-auto">
                 <Table
@@ -48,11 +48,17 @@ const TopSellingTable = () => {
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell className="px-6" colSpan={4}>
+                            <TableCell className="px-6" colSpan={3}>
                                 Client
                             </TableCell>
                             <TableCell className="px-0" colSpan={2}>
                                 Date
+                            </TableCell>
+                            <TableCell className="px-0" colSpan={3}>
+                                Département
+                            </TableCell>
+                            <TableCell className="px-0" colSpan={2}>
+                                Agent
                             </TableCell>
                             <TableCell className="px-0" colSpan={2}>
                                 Statut
@@ -67,7 +73,7 @@ const TopSellingTable = () => {
                             <TableRow key={index} hover>
                                 <TableCell
                                     className="px-0 capitalize"
-                                    colSpan={4}
+                                    colSpan={3}
                                     align="left"
                                 >
                                     <div className="flex items-center">
@@ -84,7 +90,20 @@ const TopSellingTable = () => {
                                 >
                                     {courrier.date}
                                 </TableCell>
-
+                                <TableCell
+                                    className="px-0 capitalize"
+                                    align="left"
+                                    colSpan={3}
+                                >
+                                    {courrier.departement_affecte}
+                                </TableCell>
+                                <TableCell
+                                    className="px-0 capitalize"
+                                    align="left"
+                                    colSpan={2}
+                                >
+                                    {courrier.agent_affecte}
+                                </TableCell>
                                 <TableCell
                                     className="px-0"
                                     align="left"
@@ -130,6 +149,8 @@ const courrierList = [
         statut: 'NV', 
         // NV : nouveau courrier
         fileUrl : '/assets/courriers/courrier_client_01-01-2021.pdf',
+        departement_affecte: 'Département 1',
+        agent_affecte: 'Agent 1',
     },
     {
         imgUrl: '/assets/images/file-types/001-pdf.svg',
@@ -138,6 +159,8 @@ const courrierList = [
         statut: 'CS',
         // CS : Consulté par le directeur
         fileUrl : '/assets/courriers/courrier_client_01-01-2021',
+        departement_affecte: 'Département 1',
+        agent_affecte: 'Agent 1',
     },
     {
         imgUrl: '/assets/images/file-types/001-pdf.svg',
@@ -146,6 +169,8 @@ const courrierList = [
         statut: 'AF',
         // AF : Affecté à un departement
         fileUrl : '/assets/courriers/courrier_client_01-01-2021',
+        departement_affecte: 'Département 1',
+        agent_affecte: 'Agent 1',
     },
     {
         imgUrl: '/assets/images/file-types/001-pdf.svg',
@@ -153,6 +178,8 @@ const courrierList = [
         date: '01/01/2022',
         statut: 'NV',
         fileUrl : '/assets/courriers/courrier_client_01-01-2021',
+        departement_affecte: 'Département 1',
+        agent_affecte: 'Agent 1',
     },
     {
         imgUrl: '/assets/images/file-types/001-pdf.svg',
@@ -160,6 +187,8 @@ const courrierList = [
         date: '01/01/2022',
         statut: 'AF',
         fileUrl : '/assets/courriers/courrier_client_01-01-2021',
+        departement_affecte: 'Département 1',
+        agent_affecte: 'Agent 1',
     },
 ]
 

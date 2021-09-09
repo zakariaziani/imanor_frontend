@@ -15,43 +15,43 @@ const DepartTable = [
         code: 101,
         nom: 'Système d\'information',
         sigle: 'SI',
-        chef: 'test test',
-        parent: 'chi 7aja',
+        chef: 'Agent 1',
+        parent: 'Département 1',
     },
     {
         code: 101,
         nom: 'Système d\'information',
         sigle: 'SI',
-        chef: 'test test',
-        parent: 'chi 7aja',
+        chef: 'Agent 1',
+        parent: 'Département 1',
     },
     {
         code: 101,
         nom: 'Système d\'information',
         sigle: 'SI',
-        chef: 'test test',
-        parent: 'chi 7aja',
+        chef: 'Agent 1',
+        parent: 'Département 1',
     },
     {
         code: 101,
         nom: 'Système d\'information',
         sigle: 'SI',
-        chef: 'test test',
-        parent: 'chi 7aja',
+        chef: 'Agent 1',
+        parent: 'Département 1',
     },
     {
         code: 101,
         nom: 'Système d\'information',
         sigle: 'SI',
-        chef: 'test test',
-        parent: 'chi 7aja',
+        chef: 'Agent 1',
+        parent: 'Département 1',
     },
     {
         code: 101,
         nom: 'Système d\'information',
         sigle: 'SI',
-        chef: 'test test',
-        parent: 'chi 7aja',
+        chef: 'Agent 1',
+        parent: 'Département 1',
     },
 ]
 
@@ -73,11 +73,11 @@ const DepartementsTable = () => {
             <Table className="whitespace-pre">
                 <TableHead>
                     <TableRow>
-                        <TableCell className="px-0">Code</TableCell>
-                        <TableCell className="px-0">Nom</TableCell>
+                        <TableCell className="px-0">Identifiant</TableCell>
+                        <TableCell className="px-0">Dénomination</TableCell>
                         <TableCell className="px-0">Sigle</TableCell>
                         <TableCell className="px-0">Chef</TableCell>
-                        <TableCell className="px-0">parent</TableCell>
+                        <TableCell className="px-0">Entité Parent</TableCell>
                         <TableCell className="px-0">Supprimer</TableCell>
                         <TableCell className="px-0">Modifier</TableCell>
                     </TableRow>

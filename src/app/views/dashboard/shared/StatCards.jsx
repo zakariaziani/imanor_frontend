@@ -30,7 +30,7 @@ const StatCards = () => {
                         </div>
                     </div>
                     <Tooltip title="View Details" placement="top">
-                        <IconButton>
+                        <IconButton href="/users" >
                             <Icon>arrow_right_alt</Icon>
                         </IconButton>
                     </Tooltip>
@@ -43,7 +43,7 @@ const StatCards = () => {
                     elevation={6}
                 >
                     <div className="flex items-center">
-                        <Icon className={classes.icon}>store</Icon>
+                        <Icon className={classes.icon}>email</Icon>
                         <div className="ml-3">
                             <small className="text-muted">
                                 Nombre de couriers
@@ -54,7 +54,7 @@ const StatCards = () => {
                         </div>
                     </div>
                     <Tooltip title="View Details" placement="top">
-                        <IconButton>
+                        <IconButton href="/courriers">
                             <Icon>arrow_right_alt</Icon>
                         </IconButton>
                     </Tooltip>

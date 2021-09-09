@@ -29,6 +29,7 @@ const Departements = () => {
                     variant="contained"
                     color="secondary"
                     className={classes.button}
+                    href="/nouveauDepartement"
                 >
                     Ajouter
             </Button>
