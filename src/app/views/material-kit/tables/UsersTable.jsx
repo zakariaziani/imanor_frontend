@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     IconButton,
     Table,
@@ -9,69 +9,17 @@ import {
     Icon,
     TablePagination,
 } from '@material-ui/core'
+import axios from 'axios'
 
-const usersList = [
-    {
-        nom: 'samsamani',
-        prenom: 'samir',
-        email: 'samir@imanor.ma',
-        departement: 'SI',
-        role: "Agent de l'entité",
-    },
-    {
-        nom: 'samsamani',
-        prenom: 'samir',
-        email: 'samir@imanor.ma',
-        departement: 'SI',
-        role: "Agent de l'entité",
-    },
-    {
-        nom: 'samsamani',
-        prenom: 'samir',
-        email: 'samir@imanor.ma',
-        departement: 'SI',
-        role: "Agent de l'entité",
-    },
-    {
-        nom: 'samsamani',
-        prenom: 'samir',
-        email: 'samir@imanor.ma',
-        departement: 'SI',
-        role: "Agent de l'entité",
-    },
-    {
-        nom: 'samsamani',
-        prenom: 'samir',
-        email: 'samir@imanor.ma',
-        departement: 'SI',
-        role: "Agent de l'entité",
-    },
-    {
-        nom: 'samsamani',
-        prenom: 'samir',
-        email: 'samir@imanor.ma',
-        departement: 'SI',
-        role: "Agent de l'entité",
-    },
-    {
-        nom: 'samsamani',
-        prenom: 'samir',
-        email: 'samir@imanor.ma',
-        departement: 'SI',
-        role: "Agent de l'entité",
-    },
-    {
-        nom: 'samsamani',
-        prenom: 'samir',
-        email: 'samir@imanor.ma',
-        departement: 'SI',
-        role: "Agent de l'entité",
-    },
-]
+
+
 
 const UsersTable = () => {
+
+
     const [rowsPerPage, setRowsPerPage] = React.useState(5)
     const [page, setPage] = React.useState(0)
+    const [usersList, setUsersList] = useState([])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -82,9 +30,29 @@ const UsersTable = () => {
         setPage(0)
     }
 
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/agent')
+            .then(response => {
+                setUsersList(response.data.data)
+            })
+    },[]);
+
+
+
+
     return (
-        <div className="w-full overflow-auto">
+        <div className="w-auto overflow-auto">
             <Table className="whitespace-pre">
+            <colgroup>
+                <col style={{width:'11%'}}/>
+                <col style={{width:'11%'}}/>
+                <col style={{width:'20%'}}/>
+                <col style={{width:'10%'}}/>
+                <col style={{width:'6%'}}/>
+                <col style={{width:'7%'}}/>
+                <col style={{width:'7%'}}/>
+            </colgroup>
                 <TableHead>
                     <TableRow>
                         <TableCell className="px-0">Nom</TableCell>
@@ -133,8 +101,8 @@ const UsersTable = () => {
                                         <Icon color="error">close</Icon>
                                     </IconButton>
                                 </TableCell>
-                                <TableCell className="px-0">
-                                    <IconButton>
+                                <TableCell className="px-2">
+                                    <IconButton href="/modifierUtilisateur">
                                         <Icon color="primary">edit</Icon>
                                     </IconButton>
                                 </TableCell>
@@ -156,8 +124,8 @@ const UsersTable = () => {
                 nextIconButtonProps={{
                     'aria-label': 'Next Page',
                 }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </div>
     )

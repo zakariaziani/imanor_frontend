@@ -17,6 +17,10 @@ const usersRoutes = [
         path: '/nouveauDepartement',
         component: React.lazy(() => import('./NewDepartement')),
     },
+    {
+        path: '/modifierUtilisateur',
+        component: React.lazy(() => import('./ModifyUser')),
+    },
 ]
 
 export default usersRoutes

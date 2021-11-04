@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {
     Card,
     Icon,
@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
+import axios from 'axios'
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     productTable: {
@@ -33,6 +34,14 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 const TopSellingTable = () => {
     const classes = useStyles()
+    const [courriersList, setCourriersList]=useState([])
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/courrier')
+            .then(response => {
+                setCourriersList(response.data.data)
+            })
+    }, []);
 
     return (
         <Card elevation={3} className="pt-5 mb-6">
@@ -69,7 +78,7 @@ const TopSellingTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {courrierList.map((courrier, index) => (
+                        {courriersList.map((courrier, index) => (
                             <TableRow key={index} hover>
                                 <TableCell
                                     className="px-0 capitalize"
@@ -126,7 +135,7 @@ const TopSellingTable = () => {
                                     )}
                                 </TableCell>
                                 <TableCell className="px-0" colSpan={1}>
-                                    <form method="get" action={courrier.fileUrl}>
+                                    <form method="get" action={'http://127.0.0.1:8000/' + courrier.fileUrl}>
                                         <IconButton type="submit" >
                                             <Icon color="primary">visibility</Icon>
                                         </IconButton>
@@ -141,55 +150,5 @@ const TopSellingTable = () => {
     )
 }
 
-const courrierList = [
-    {
-        imgUrl: '/assets/images/file-types/001-pdf.svg',
-        client: 'Client 1',
-        date: '01/01/2022',
-        statut: 'NV', 
-        // NV : nouveau courrier
-        fileUrl : '/assets/courriers/courrier_client_01-01-2021.pdf',
-        departement_affecte: 'Département 1',
-        agent_affecte: 'Agent 1',
-    },
-    {
-        imgUrl: '/assets/images/file-types/001-pdf.svg',
-        client: 'Client 2',
-        date: '01/01/2022',
-        statut: 'CS',
-        // CS : Consulté par le directeur
-        fileUrl : '/assets/courriers/courrier_client_01-01-2021',
-        departement_affecte: 'Département 1',
-        agent_affecte: 'Agent 1',
-    },
-    {
-        imgUrl: '/assets/images/file-types/001-pdf.svg',
-        client: 'Client 3',
-        date: '01/01/2022',
-        statut: 'AF',
-        // AF : Affecté à un departement
-        fileUrl : '/assets/courriers/courrier_client_01-01-2021',
-        departement_affecte: 'Département 1',
-        agent_affecte: 'Agent 1',
-    },
-    {
-        imgUrl: '/assets/images/file-types/001-pdf.svg',
-        client: 'Client 4',
-        date: '01/01/2022',
-        statut: 'NV',
-        fileUrl : '/assets/courriers/courrier_client_01-01-2021',
-        departement_affecte: 'Département 1',
-        agent_affecte: 'Agent 1',
-    },
-    {
-        imgUrl: '/assets/images/file-types/001-pdf.svg',
-        client: 'Client 5',
-        date: '01/01/2022',
-        statut: 'AF',
-        fileUrl : '/assets/courriers/courrier_client_01-01-2021',
-        departement_affecte: 'Département 1',
-        agent_affecte: 'Agent 1',
-    },
-]
 
 export default TopSellingTable

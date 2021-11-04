@@ -7,7 +7,6 @@ const Analytics = () => {
         <Fragment>
             <div className="analytics m-sm-30 mt-6">
                     <Grid container spacing={3} item lg={12} md={12} sm={12} xs={12}>
-                        {/* recent letters */}
                         <TopSellingTable />
                     </Grid>
             </div>

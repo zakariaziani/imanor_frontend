@@ -27,14 +27,14 @@ const Users = () => {
                     ]}
                 />
             </div>
-            <Button
+                <Button
                     variant="contained"
                     color="secondary"
                     className={classes.button}
                     href="/nouveauUtilisateur"
                 >
                     Ajouter
-            </Button>
+                </Button>
             <div className="py-3" />
             <SimpleCard title="Tous les utilisateurs">
                 <UsersTable />

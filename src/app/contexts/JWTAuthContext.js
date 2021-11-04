@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useReducer } from 'react'
-import jwtDecode from 'jwt-decode'
 import axios from 'axios.js'
 import { MatxLoading } from 'app/components'
 
@@ -13,11 +12,7 @@ const isValidToken = (accessToken) => {
     if (!accessToken) {
         return false
     }
-
-    const decodedToken = jwtDecode(accessToken)
-    const currentTime = Date.now() / 1000
-    console.log(decodedToken)
-    return decodedToken.exp > currentTime
+    return true
 }
 
 const setSession = (accessToken) => {
@@ -52,6 +47,7 @@ const reducer = (state, action) => {
             }
         }
         case 'LOGOUT': {
+
             return {
                 ...state,
                 isAuthenticated: false,
@@ -85,7 +81,7 @@ export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
 
     const login = async (email, password) => {
-        const response = await axios.post('/api/auth/login', {
+        const response = await axios.post('http://127.0.0.1:8000/api/login', {
             email,
             password,
         })
@@ -101,10 +97,9 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
-    const register = async (email, username, password) => {
-        const response = await axios.post('/api/auth/register', {
+    const register = async (email, password) => {
+        const response = await axios.post('http://127.0.0.1:8000/api/register', {
             email,
-            username,
             password,
         })
 
@@ -121,6 +116,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const logout = () => {
+        localStorage.removeItem('accessToken')
         setSession(null)
         dispatch({ type: 'LOGOUT' })
     }
@@ -132,8 +128,8 @@ export const AuthProvider = ({ children }) => {
 
                 if (accessToken && isValidToken(accessToken)) {
                     setSession(accessToken)
-                    const response = await axios.get('/api/auth/profile')
-                    const { user } = response.data
+                    const response = await axios.get('http://127.0.0.1:8000/api/profile')
+                    const user  = response.data
 
                     dispatch({
                         type: 'INIT',

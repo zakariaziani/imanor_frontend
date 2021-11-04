@@ -14,7 +14,7 @@ export const authRoles = {
 //     component: Analytics,
 //     auth: authRoles.admin <===============
 //   }
-// ];
+// ]; 
 
 // Check navigaitons.js
 

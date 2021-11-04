@@ -8,13 +8,12 @@ import {
     Hidden,
 } from '@material-ui/core'
 import { MatxMenu } from 'app/components'
-import NotificationBar from '../../NotificationBar/NotificationBar'
 import { Link } from 'react-router-dom'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import useAuth from 'app/hooks/useAuth'
 import useSettings from 'app/hooks/useSettings'
-import { NotificationProvider } from 'app/contexts/NotificationContext'
+
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     topbar: {
@@ -66,6 +65,8 @@ const Layout1Topbar = () => {
     const classes = useStyles()
     const { settings, updateSettings } = useSettings()
     const { logout, user } = useAuth()
+
+
     const isMdScreen = useMediaQuery(theme.breakpoints.down('md'))
     const fixed = settings.layout1Settings.topbar.fixed
 
@@ -107,31 +108,19 @@ const Layout1Topbar = () => {
                         >
                             <Icon>menu</Icon>
                         </IconButton>
-
-                        <div className="hide-on-mobile">
-                            <IconButton>
-                                <Icon>mail_outline</Icon>
-                            </IconButton>
-                        </div>
                     </div>
                     <div className="flex items-center">
-                        <NotificationProvider>
-                            <NotificationBar />
-                        </NotificationProvider>
-
-                        {/* <NotificationBar2 /> */}
-
                         <MatxMenu
                             menuButton={
                                 <div className={classes.userMenu}>
                                     <Hidden xsDown>
                                         <span>
-                                            Hi <strong>{user.name}</strong>
+                                            Hi <strong>{user.prenom}</strong>
                                         </span>
                                     </Hidden>
                                     <Avatar
                                         className="cursor-pointer"
-                                        src={user.avatar}
+                                        src=''
                                     />
                                 </div>
                             }

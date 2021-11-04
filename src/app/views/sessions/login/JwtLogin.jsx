@@ -13,6 +13,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import history from 'history.js'
 import clsx from 'clsx'
 import useAuth from 'app/hooks/useAuth'
+// import axios  from "axios";
+
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     cardHolder: {
@@ -35,12 +37,11 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 const JwtLogin = () => {
     const [loading, setLoading] = useState(false)
     const [userInfo, setUserInfo] = useState({
-        email: 'zakariaziani99@imanor.com',
+        email: 'test@gmail.com',
         password: '123456',
     })
     const [message, setMessage] = useState('')
     const { login } = useAuth()
-
     const classes = useStyles()
 
     const handleChange = ({ target: { name, value } }) => {
@@ -50,10 +51,30 @@ const JwtLogin = () => {
     }
 
     const handleFormSubmit = async (event) => {
+        // event.preventDefault()
+        // setLoading(true)
+        // try {
+        //     // await axios.post('http://127.0.0.1:8000/api/login', userInfo , {withCredentials: true})
+            
+        //     await fetch('http://127.0.0.1:8000/api/login', {
+        //         method : 'POST',
+        //         headers : {'Content-Type': 'application/json'},
+        //         credentials : 'include',
+        //         body: JSON.stringify(userInfo)
+        //     })
+        //     setRedirect(true)
+        //     history.push('/')
+        // } catch (e) {
+        //     console.log(e)
+        //     setMessage(e.message)
+        //     setLoading(false)
+        // }
+//----------------------------------------------------------------------------------------------------------
         setLoading(true)
         try {
             await login(userInfo.email, userInfo.password)
             history.push('/')
+            history.go(0)
         } catch (e) {
             console.log(e)
             setMessage(e.message)

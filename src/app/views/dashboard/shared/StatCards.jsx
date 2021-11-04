@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { Grid, Card, Icon, IconButton, Tooltip } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import axios from "axios"
 
 const useStyles = makeStyles(({ palette, ...theme }) => ({
     icon: {
@@ -12,6 +13,20 @@ const useStyles = makeStyles(({ palette, ...theme }) => ({
 
 const StatCards = () => {
     const classes = useStyles()
+    const [usersNumber, setUsersNumber]=useState(0)
+    const [courriersNumber, setCourriersNumber]=useState(1)
+
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/agent')
+            .then(response => {
+                setUsersNumber(response.data.data.length)
+            })
+        axios.get('http://127.0.0.1:8000/api/courrier')
+            .then(response => {
+                setCourriersNumber(response.data.data.length)
+        })
+    }, [])
 
     return (
         <Grid container spacing={3} className="mb-3">
@@ -25,7 +40,7 @@ const StatCards = () => {
                         <div className="ml-3">
                             <small className="text-muted">Nombre d'utilisateurs</small>
                             <h6 className="m-0 mt-1 text-primary font-medium">
-                                3050
+                                {usersNumber}
                             </h6>
                         </div>
                     </div>
@@ -49,7 +64,7 @@ const StatCards = () => {
                                 Nombre de couriers
                             </small>
                             <h6 className="m-0 mt-1 text-primary font-medium">
-                                201
+                                {courriersNumber}
                             </h6>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment} from 'react'
+import React, { useState, useEffect,useRef, Fragment} from 'react'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator'
 import {
     Button,
@@ -7,24 +7,34 @@ import {
     Fab, 
     Card, 
     Divider,
-    TextField,
+    Select,
+    InputLabel,
 } from '@material-ui/core'
 import {
     MuiPickersUtilsProvider,
-    KeyboardDatePicker,
+    DatePicker,
 } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
-import {MatxProgressBar, SimpleCard } from 'app/components'
-import { Autocomplete } from '@material-ui/lab'
-//import clsx from 'clsx'
-//import axios from 'axios'
+import { SimpleCard } from 'app/components'
+import axios from 'axios'
+import history from 'history.js'
 
 const UploadForm = () => {
 
-//Upload Code
+
     const [files, setFiles] = useState([])
-    const [queProgress, setQueProgress] = useState(0)
-    //const [dargClass, setDragClass] = useState('')
+    const [state, setState] = useState({
+        client: '',
+        date: '',
+        description: '',
+        departement: '',
+        agent: '',
+    })
+    const [Agents, setAgents] = useState([]);
+    const [Departements, setDepartements] = useState([]);
+    const form = useRef(null)
+
+    
 
     const handleFileSelect = (event) => {
         let files = event.target.files
@@ -33,44 +43,10 @@ const UploadForm = () => {
         for (const iterator of files) {
             list.push({
                 file: iterator,
-                uploading: false,
-                error: false,
-                progress: 0,
             })
         }
         setFiles(list)
     }
-
-    // const handleDragOver = (event) => {
-    //     event.preventDefault()
-    //     setDragClass('drag-shadow')
-    // }
-
-    // const handleDrop = (event) => {
-    //     event.preventDefault()
-    //     event.persist()
-
-    //     let files = event.dataTransfer.files
-    //     let list = []
-
-    //     for (const iterator of files) {
-    //         list.push({
-    //             file: iterator,
-    //             uploading: false,
-    //             error: false,
-    //             progress: 0,
-    //         })
-    //     }
-
-    //     setDragClass('')
-    //     setFiles(list)
-
-    //     return false
-    // }
-
-    // const handleDragStart = (event) => {
-    //     setDragClass('drag-shadow')
-    // }
 
     const handleSingleRemove = (index) => {
         let tempList = [...files]
@@ -78,90 +54,43 @@ const UploadForm = () => {
         setFiles([...tempList])
     }
 
-    const handleAllRemove = () => {
-        setFiles([])
-        setQueProgress(0)
-    }
-
-    const uploadSingleFile = (index) => {
-        let allFiles = [...files]
-        let file = files[index]
-
-        allFiles[index] = { ...file, uploading: true, error: false }
-
-        setFiles([...allFiles])
-
-        //! upload file to the backend API
-        //axios.post("api/uploadfile", allFiles);
-    }
-
-    const uploadAllFile = () => {
-        let allFiles = []
-
-        files.map((item) => {
-            allFiles.push({
-                ...item,
-                uploading: true,
-                error: false,
-            })
-
-            return item
-        })
-
-        setFiles([...allFiles])
-        setQueProgress(35)
-    }
-
-    const handleSingleCancel = (index) => {
-        let allFiles = [...files]
-        let file = files[index]
-
-        allFiles[index] = { ...file, uploading: false, error: true }
-
-        setFiles([...allFiles])
-    }
-
-    const handleCancelAll = () => {
-        let allFiles = []
-
-        files.map((item) => {
-            allFiles.push({
-                ...item,
-                uploading: false,
-                error: true,
-            })
-
-            return item
-        })
-
-        setFiles([...allFiles])
-        setQueProgress(0)
-    }
-
     let isEmpty = !!!files.length
 
 
 //Form code
 
-    const [state, setState] = useState({
-        date: new Date(),
-    })
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        // let data = {
+        //     ...state,
+        //     'file':files[0],
+        // }
+        // console.log(data)
+        const data = new FormData(form.current);
+        // form.append("file", files[0].file)
+        // form.append("client", data.client)
+        // form.append("departement", data.departement)
+        // form.append("agent", data.agent)
+        // form.append("description", data.description)
+        // form.append("date", data.date)
+        console.log(form)
+        const res = await axios.post('http://localhost:8000/api/courrier', data);
+        console.log(res)
+        if (res.data.status === 200)
+        {
+            console.log(res.data.message);
+            setState({
+                client : '',
+                departement : '',
+                date : '',
+                agent : '',
+                description : '',
 
-    useEffect(() => {
-        ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-            console.log(value)
+            })
+            setFiles([])
+            // history.push('/courriers')
 
-            if (value !== state.password) {
-                return false
-            }
-            return true
-        })
-        return () => ValidatorForm.removeValidationRule('isPasswordMatch')
-    }, [state.password])
-
-    const handleSubmit = (event) => {
-        console.log("submitted");
-        console.log(event);
+        }
     }
 
     const handleChange = (event) => {
@@ -172,104 +101,63 @@ const UploadForm = () => {
         })
     }
 
-    const handleDateChange = (date) => {
-        setState({ ...state, date })
+    const handleDateChange = () => {
+        var today = new Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        console.log(date);
+        setState({ ...state, 'date' : date })
     }
 
     const {
-        username,
+        client,
         date,
         description,
+        departement,
+        agent,
     } = state
 
 
-const suggestions = [
-    { label: 'Afghanistan' },
-    { label: 'Aland Islands' },
-    { label: 'Albania' },
-    { label: 'Algeria' },
-    { label: 'American Samoa' },
-    { label: 'Andorra' },
-    { label: 'Angola' },
-    { label: 'Anguilla' },
-    { label: 'Antarctica' },
-    { label: 'Antigua and Barbuda' },
-    { label: 'Argentina' },
-    { label: 'Armenia' },
-    { label: 'Aruba' },
-    { label: 'Australia' },
-    { label: 'Austria' },
-    { label: 'Azerbaijan' },
-    { label: 'Bahamas' },
-    { label: 'Bahrain' },
-    { label: 'Bangladesh' },
-    { label: 'Barbados' },
-    { label: 'Belarus' },
-    { label: 'Belgium' },
-    { label: 'Belize' },
-    { label: 'Benin' },
-    { label: 'Bermuda' },
-    { label: 'Bhutan' },
-    { label: 'Bolivia, Plurinational State of' },
-    { label: 'Bonaire, Sint Eustatius and Saba' },
-    { label: 'Bosnia and Herzegovina' },
-    { label: 'Botswana' },
-    { label: 'Bouvet Island' },
-    { label: 'Brazil' },
-    { label: 'British Indian Ocean Territory' },
-    { label: 'Brunei Darussalam' },
-]
-
-
+//? /////////////////////////////// get data ///////////////////////////////
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/agent')
+        .then(response => {
+            setAgents(response.data.data)
+        })
+        axios.get('http://127.0.0.1:8000/api/departement')
+        .then(response => {
+            setDepartements(response.data.data)
+        })
+    }, []);
 
     return (
         <div>
-            <div className="upload-form m-sm-30">
+        <ValidatorForm method="POST" encType="multipart/form-data" onSubmit={handleSubmit} onError={() => null}>
+        <div className="upload-form m-sm-30">
                 <div className="flex flex-wrap mb-6">
                     <label htmlFor="upload-single-file">
                         <Fab
-                            className="capitalize"
                             color="primary"
                             component="span"
                             variant="extended"
                         >
                             <div className="flex items-center">
                                 <Icon className="pr-8">cloud_upload</Icon>
-                                <span>Un Seul Fichier</span>
+                                <span>Importer le courrier</span>
                             </div>
                         </Fab>
                     </label>
                     <input
                         className="hidden"
                         onChange={handleFileSelect}
+                        name="files"
                         id="upload-single-file"
                         type="file"
-                    />
-                    <div className="px-4"></div>
-                    <label htmlFor="upload-multiple-file">
-                        <Fab
-                            className="capitalize"
-                            color="primary"
-                            component="span"
-                            variant="extended"
-                        >
-                            <div className="flex items-center">
-                                <Icon className="pr-8">cloud_upload</Icon>
-                                <span>Plusieurs Fichiers</span>
-                            </div>
-                        </Fab>
-                    </label>
-                    <input
-                        className="hidden"
-                        onChange={handleFileSelect}
-                        id="upload-multiple-file"
-                        type="file"
-                        multiple
+
                     />
                 </div>
 
 
-                <Card className="mb-6" elevation={2}>
+                <Card className="mb-6" elevation={6}>
                     <div className="p-4">
                         <Grid
                             container
@@ -281,14 +169,8 @@ const suggestions = [
                             <Grid item lg={4} md={4}>
                                 Name
                             </Grid>
-                            <Grid item lg={1} md={1}>
+                            <Grid item lg={4} md={4}>
                                 Size
-                            </Grid>
-                            <Grid item lg={2} md={2}>
-                                Progress
-                            </Grid>
-                            <Grid item lg={1} md={1}>
-                                Status
                             </Grid>
                             <Grid item lg={4} md={4}>
                                 Actions
@@ -300,7 +182,7 @@ const suggestions = [
                     {isEmpty && <p className="px-4">Que is empty</p>}
 
                     {files.map((item, index) => {
-                        let { file, uploading, error, progress } = item
+                        let { file } = item
                         return (
                             <div className="px-4 py-4" key={file.name}>
                                 <Grid
@@ -313,46 +195,12 @@ const suggestions = [
                                     <Grid item lg={4} md={4} sm={12} xs={12}>
                                         {file.name}
                                     </Grid>
-                                    <Grid item lg={1} md={1} sm={12} xs={12}>
-                                        {(file.size / 1024 / 1024).toFixed(1)}{' '}
+                                    <Grid item lg={4} md={4} sm={12} xs={12}>
+                                        {(file.size / 1024 / 1024 ).toFixed(2)}{' '}
                                         MB
-                                    </Grid>
-                                    <Grid item lg={2} md={2} sm={12} xs={12}>
-                                        <MatxProgressBar
-                                            value={progress}
-                                        ></MatxProgressBar>
-                                    </Grid>
-                                    <Grid item lg={1} md={1} sm={12} xs={12}>
-                                        {error && (
-                                            <Icon color="error">error</Icon>
-                                        )}
-                                        {/* {uploading && <Icon className="text-green">done</Icon>} */}
                                     </Grid>
                                     <Grid item lg={4} md={4} sm={12} xs={12}>
                                         <div>
-                                            <Button
-                                                size="small"
-                                                variant="contained"
-                                                color="primary"
-                                                disabled={uploading}
-                                                onClick={() =>
-                                                    uploadSingleFile(index)
-                                                }
-                                            >
-                                                Upload
-                                            </Button>
-                                            <Button
-                                                className="mx-2"
-                                                size="small"
-                                                variant="contained"
-                                                disabled={!uploading}
-                                                color="secondary"
-                                                onClick={() =>
-                                                    handleSingleCancel(index)
-                                                }
-                                            >
-                                                Cancel
-                                            </Button>
                                             <Button
                                                 variant="contained"
                                                 size="small"
@@ -370,54 +218,7 @@ const suggestions = [
                         )
                     })}
                 </Card>
-
-                <div>
-                    <p className="m-0">Queue progress:</p>
-                    <div className="py-4">
-                        <MatxProgressBar value={queProgress}></MatxProgressBar>
-                    </div>
-                    <div className="flex">
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            disabled={isEmpty}
-                            onClick={uploadAllFile}
-                        >
-                            Upload All
-                        </Button>
-                        <Button
-                            className="mx-2"
-                            variant="contained"
-                            color="secondary"
-                            disabled={isEmpty}
-                            onClick={handleCancelAll}
-                        >
-                            Cancel All
-                        </Button>
-                        {!isEmpty && (
-                            <Button
-                                variant="contained"
-                                className="bg-error"
-                                onClick={handleAllRemove}
-                            >
-                                Remove All
-                            </Button>
-                        )}
-                    </div>
-                </div>
-            
         </div>
-
-
-
-{/*! information form */}
-{/*! information form */}
-{/*! information form */}
-
-
-
-
-        <ValidatorForm onSubmit={handleSubmit} onError={() => null}>
                 <Grid container spacing={6}>
                     <Grid item lg={6} md={6} sm={12} xs={12}>
                         <TextValidator
@@ -425,8 +226,8 @@ const suggestions = [
                             label="Client"
                             onChange={handleChange}
                             type="text"
-                            name="username"
-                            value={username || ''}
+                            name="client"
+                            value={client || ''}
                             validators={[
                                 'required',
                                 'minStringLength: 4',
@@ -438,19 +239,18 @@ const suggestions = [
                     </Grid>
                     <Grid item lg={6} md={6} sm={12} xs={12}>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <KeyboardDatePicker
+                            <DatePicker
                                 className="mb-4 w-full"
+                                onChange={handleDateChange}
                                 margin="none"
-                                id="mui-pickers-date"
+                                id="date"
+                                name="date"
                                 label="Date"
                                 inputVariant="standard"
                                 type="text"
                                 autoOk={true}
                                 value={date}
-                                onChange={handleDateChange}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
+                                
                             />
                         </MuiPickersUtilsProvider>
                     </Grid>
@@ -472,38 +272,32 @@ const suggestions = [
                     <Grid item lg={12} md={6} sm={12} xs={12}>
                         <SimpleCard title="Affectation">  
                             <Fragment>
-                                <Autocomplete
-                                    id="depart"
-                                    name="depart"
-                                    onChange={handleChange}
-                                    className="mb-4 w-500"
-                                    options={suggestions}
-                                    getOptionLabel={(option) => option.label}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Département"
-                                            variant="outlined"
-                                            fullWidth
-                                        />
-                                    )}
-                                />
-                                <Autocomplete
-                                    id="agent"
+                                <InputLabel htmlFor="grouped-native-select">Affecté au département :</InputLabel>
+                                <Select native 
+                                    id="departement" 
+                                    name="departement"
+                                    className="mb-4 w-full" 
+                                    value={departement || ''}
+                                    onChange={handleChange}>
+                                    { //! select departements from the list that we got from the API
+                                    Departements.map(d => (
+                                            <option key={d.id} value={d.id}>{d.departement}</option>
+                                    ))
+                                    }
+                                </Select>
+                                <InputLabel htmlFor="grouped-native-select">Affecté à l'agent :</InputLabel>
+                                <Select native 
+                                    id="agent" 
                                     name="agent"
-                                    className="mb-4 w-500"
-                                    onChange={handleChange}
-                                    options={suggestions}
-                                    getOptionLabel={(option) => option.label}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Agent"
-                                            variant="outlined"
-                                            fullWidth
-                                        />
-                                    )}
-                                />
+                                    className="mb-4 w-full" 
+                                    value={agent || ''}
+                                    onChange={handleChange}>
+                                    { //! select departements from the list that we got from the API
+                                    Agents.map(a => (
+                                            <option key={a.id} value={a.id}>{a.nom + ' ' + a.prenom}</option>
+                                    ))
+                                    }
+                                </Select>
                             </Fragment>
                         </SimpleCard>
                     </Grid>

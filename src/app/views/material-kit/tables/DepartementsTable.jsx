@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {
     IconButton,
     Table,
@@ -8,56 +8,15 @@ import {
     TableCell,
     Icon,
     TablePagination,
+    colgroup,
 } from '@material-ui/core'
+import axios from "axios"
 
-const DepartTable = [
-    {
-        code: 101,
-        nom: 'Système d\'information',
-        sigle: 'SI',
-        chef: 'Agent 1',
-        parent: 'Département 1',
-    },
-    {
-        code: 101,
-        nom: 'Système d\'information',
-        sigle: 'SI',
-        chef: 'Agent 1',
-        parent: 'Département 1',
-    },
-    {
-        code: 101,
-        nom: 'Système d\'information',
-        sigle: 'SI',
-        chef: 'Agent 1',
-        parent: 'Département 1',
-    },
-    {
-        code: 101,
-        nom: 'Système d\'information',
-        sigle: 'SI',
-        chef: 'Agent 1',
-        parent: 'Département 1',
-    },
-    {
-        code: 101,
-        nom: 'Système d\'information',
-        sigle: 'SI',
-        chef: 'Agent 1',
-        parent: 'Département 1',
-    },
-    {
-        code: 101,
-        nom: 'Système d\'information',
-        sigle: 'SI',
-        chef: 'Agent 1',
-        parent: 'Département 1',
-    },
-]
 
 const DepartementsTable = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(5)
     const [page, setPage] = React.useState(0)
+    const [departTable, setDepartTable] = useState([])
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
@@ -68,22 +27,38 @@ const DepartementsTable = () => {
         setPage(0)
     }
 
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/departement')
+            .then(response => {
+                setDepartTable(response.data.data)
+            })
+    },[]);
+
     return (
-        <div className="w-full overflow-auto">
-            <Table className="whitespace-pre">
+        <div className="w-full">
+            <Table className=" whitespace-pre">
+            <colgroup>
+                <col style={{width:'7%'}}/>
+                <col style={{width:'30%'}}/>
+                <col style={{width:'7%'}}/>
+                <col style={{width:'20%'}}/>
+                <col style={{width:'10%'}}/>
+                <col style={{width:'7%'}}/>
+                <col style={{width:'7%'}}/>
+            </colgroup>
                 <TableHead>
                     <TableRow>
                         <TableCell className="px-0">Identifiant</TableCell>
-                        <TableCell className="px-0">Dénomination</TableCell>
-                        <TableCell className="px-0">Sigle</TableCell>
+                        <TableCell  className="px-0">Dénomination</TableCell>
+                        <TableCell align="center" className="px-0">Sigle</TableCell>
                         <TableCell className="px-0">Chef</TableCell>
-                        <TableCell className="px-0">Entité Parent</TableCell>
+                        <TableCell align="center" className="px-0">Entité Parente</TableCell>
                         <TableCell className="px-0">Supprimer</TableCell>
                         <TableCell className="px-0">Modifier</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {DepartTable
+                    {departTable
                         .slice(
                             page * rowsPerPage,
                             page * rowsPerPage + rowsPerPage
@@ -94,24 +69,25 @@ const DepartementsTable = () => {
                                     className="px-0"
                                     align="left"
                                 >
-                                    {user.code}
+                                    {user.id}
                                 </TableCell>
                                 <TableCell
                                     className="px-0 capitalize"
                                     align="left"
+                                    
                                 >
-                                    {user.nom}
+                                    {user.departement}
                                 </TableCell>
                                 <TableCell
-                                    className="px-0 capitalize"
-                                    align="left"
+                                    className="px-1 capitalize"
+                                    align="center"
                                 >
                                     {user.sigle}
                                 </TableCell>
                                 <TableCell className="px-0 capitalize">
-                                    {user.chef}
+                                    {user.chef_id}
                                 </TableCell>
-                                <TableCell className="px-0 capitalize">
+                                <TableCell align="center" className="px-0 capitalize">
                                     {user.parent}
                                 </TableCell>
                                 <TableCell className="px-0">
@@ -133,7 +109,7 @@ const DepartementsTable = () => {
                 className="px-4"
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={DepartTable.length}
+                count={departTable.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 backIconButtonProps={{
@@ -142,8 +118,8 @@ const DepartementsTable = () => {
                 nextIconButtonProps={{
                     'aria-label': 'Next Page',
                 }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </div>
     )

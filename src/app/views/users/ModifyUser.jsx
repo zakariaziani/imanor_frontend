@@ -12,61 +12,31 @@ import axios from 'axios'
 
 const NewUser = () => {
     const [state, setState] = useState({
-        nom: '',
-        prenom: '',
-        password: '',
-        confirmPassword: '',
-        departement: '',
-        email: '',
-        role: '',
+        date: new Date(),
     })
-    const [agents,setAgents] = useState([])
-    const [departements, setDepartements] = useState([])
-    var list = []
-
-    useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/agent')
-            .then(response => {
-                setAgents(response.data.data)
-            })
-        axios.get('http://127.0.0.1:8000/api/departement')
-            .then(response => {
-                setDepartements(response.data.data)
-            })
-        for (const d of departements) {
-            let temp = []
-            for (const a of agents) {
-                if (a.departement === d.id) {
-                    temp.push(a.nom + ' ' + a.prenom)
-                } 
-            }
-            list.push({key:d.id, value:temp})
-        }
-    }, []);
-
-
-
 
     useEffect(() => {
         ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-            if (value !== state.password) {
+            console.log(value)
+
+            if (value !== state.mdp) {
                 return false
             }
             return true
         })
         return () => ValidatorForm.removeValidationRule('isPasswordMatch')
-    }, [state.password])
+    }, [state.mdp])
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const res = await axios.post('http://localhost:8000/api/agent', state);
+        const res = await axios.post('http://localhost:8000/api/add-agent', state);
         if (res.data.status === 200)
         {
             console.log(res.data.message);
             setState({
                 nom: '',
                 prenom: '',
-                password: '',
+                mdp: '',
                 confirmPassword: '',
                 departement: '',
                 email: '',
@@ -85,26 +55,26 @@ const NewUser = () => {
         })
     }
 
-    // const {
-    //     nom,
-    //     prenom,
-    //     password,
-    //     confirmPassword,
-    //     departement,
-    //     email,
-    //     role,
-    // } = state
+    const {
+        nom= 'zakaria',
+        prenom= 'ziani',
+        mdp= '123456',
+        confirmPassword = '123456',
+        departement = 'SI',
+        email = 'zakaria ziani',
+        role = 'agent de l\'entité',
+    } = state
 
     return (
         <div className="m-sm-30">
             <div className="mb-sm-30">
                 <Breadcrumb
                     routeSegments={[
-                        { name: 'Nouvel utilisateur', path: '/NouvelUtilisateur' },
+                        { name: 'Modifier un utilisateur', path: '/' },
                     ]}
                 />
             </div>
-            <SimpleCard title="Nouvel utilisateur">
+            <SimpleCard title="Modifier les informations d'un utilisateur">
             <ValidatorForm onSubmit={handleSubmit} onError={() => null}>
                 <Grid container spacing={6}>
                     <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -114,7 +84,7 @@ const NewUser = () => {
                             onChange={handleChange}
                             type="text"
                             name="nom"
-                            value={state.nom}
+                            value={nom}
                             validators={[
                                 'required',
                             ]}
@@ -124,21 +94,22 @@ const NewUser = () => {
                             className="mb-4 w-full"
                             label="Password"
                             onChange={handleChange}
-                            name="password"
+                            name="mdp"
                             type="password"
-                            value={state.password}
+                            value={mdp}
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
-                        <InputLabel htmlFor="departement">Département</InputLabel>
-                        <Select native id="departement" name="departement" className="mb-4 w-full" onChange={handleChange}>
-                            
-                            { //! select departements from the list that we got from the API
-                            departements.map(d => (
-                                    <option value={d.id}>{d.departement}</option>
-                            ))
-                            }
-                            
+                        <InputLabel htmlFor="departement-select">Département</InputLabel>
+                        <Select native id="departement" name="departement" className="mb-4 w-full">
+                            <optgroup label="Département 1">
+                                <option value={departement || ''}>Service 1</option>
+                                <option value={departement || ''}>Service 2</option>
+                            </optgroup>
+                            <optgroup label="Département 2">
+                                <option value={departement || ''}>Service 3</option>
+                                <option value={departement || ''}>Service 4</option>
+                            </optgroup>
                         </Select>
                         <TextValidator
                             className="mb-4 w-full"
@@ -146,7 +117,7 @@ const NewUser = () => {
                             onChange={handleChange}
                             type="email"
                             name="email"
-                            value={state.email}
+                            value={email}
                             validators={['required', 'isEmail']}
                             errorMessages={[
                                 'this field is required',
@@ -162,7 +133,7 @@ const NewUser = () => {
                             onChange={handleChange}
                             type="text"
                             name="prenom"
-                            value={state.prenom}
+                            value={prenom}
                             validators={['required']}
                             errorMessages={['this field is required']}
                         />
@@ -172,7 +143,7 @@ const NewUser = () => {
                             onChange={handleChange}
                             name="confirmPassword"
                             type="password"
-                            value={state.confirmPassword || ''}
+                            value={confirmPassword || ''}
                             validators={['required', 'isPasswordMatch']}
                             errorMessages={[
                                 'this field is required',
@@ -185,15 +156,15 @@ const NewUser = () => {
                             name="role"
                             className="mb-4 w-full" 
                             onChange={handleChange}>
-                            <option value={"AE"}>Agent de l'entité</option>
-                            <option value={"RE"}>Responsable de l'entité</option>
-                            <option value={"RC"}>Responsable central</option>
+                            <option value={role}>Agent de l'entité</option>
+                            <option value={role}>Responsable de l'entité</option>
+                            <option value={role}>Responsable central</option>
                         </Select>
                     </Grid>
                 </Grid>
                 <Button color="primary" variant="contained" type="submit">
                     <Icon>send</Icon>
-                    <span className="pl-2 capitalize">Submit</span>
+                    <span className="pl-2 capitalize">Submit Change</span>
                 </Button>
             </ValidatorForm>
             </SimpleCard>
