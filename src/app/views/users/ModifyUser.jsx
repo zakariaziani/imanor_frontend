@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import {useParams} from 'react-router'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator'
 import {
     Button,
@@ -9,16 +10,26 @@ import {
 } from '@material-ui/core'
 import { Breadcrumb, SimpleCard } from 'app/components'
 import axios from 'axios'
+import {useHistory} from 'react-router-dom'
 
-const NewUser = () => {
-    const [state, setState] = useState({
-        date: new Date(),
-    })
+const ModifyUser = () => {
+    const [state, setState] = useState({})
+    const {
+        nom= '',
+        prenom= '',
+        mdp= '',
+        confirmPassword = '',
+        departement = '',
+        email = '',
+        role = '',
+    } = state
 
+    const [departements, setDepartements] = useState([])
+    const [agent, setAgent] = useState([])
+    const userId = useParams()
+    const history = useHistory();
     useEffect(() => {
         ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-            console.log(value)
-
             if (value !== state.mdp) {
                 return false
             }
@@ -27,24 +38,31 @@ const NewUser = () => {
         return () => ValidatorForm.removeValidationRule('isPasswordMatch')
     }, [state.mdp])
 
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/departement')
+            .then(response => {
+                setDepartements(response.data.data)
+            })
+        axios.get('http://127.0.0.1:8000/api/agent/' + userId.id)
+            .then(response => {
+                setState(response.data.data)
+            })
+        console.log(state)
+    }, []);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const res = await axios.post('http://localhost:8000/api/add-agent', state);
-        if (res.data.status === 200)
-        {
-            console.log(res.data.message);
-            setState({
-                nom: '',
-                prenom: '',
-                mdp: '',
-                confirmPassword: '',
-                departement: '',
-                email: '',
-                role: '',
-            })
-
-        }
-
+        const res = await axios.put('http://localhost:8000/api/agent/'+userId.id, state);
+        setState({
+            nom: '',
+            prenom: '',
+            mdp: '',
+            confirmPassword: '',
+            departement: '',
+            email: '',
+            role: '',
+        })
+        history.push('/Users')
     }
 
     const handleChange = (event) => {
@@ -55,15 +73,7 @@ const NewUser = () => {
         })
     }
 
-    const {
-        nom= 'zakaria',
-        prenom= 'ziani',
-        mdp= '123456',
-        confirmPassword = '123456',
-        departement = 'SI',
-        email = 'zakaria ziani',
-        role = 'agent de l\'entité',
-    } = state
+
 
     return (
         <div className="m-sm-30">
@@ -101,15 +111,12 @@ const NewUser = () => {
                             errorMessages={['this field is required']}
                         />
                         <InputLabel htmlFor="departement-select">Département</InputLabel>
-                        <Select native id="departement" name="departement" className="mb-4 w-full">
-                            <optgroup label="Département 1">
-                                <option value={departement || ''}>Service 1</option>
-                                <option value={departement || ''}>Service 2</option>
-                            </optgroup>
-                            <optgroup label="Département 2">
-                                <option value={departement || ''}>Service 3</option>
-                                <option value={departement || ''}>Service 4</option>
-                            </optgroup>
+                        <Select native defaultValue={departement} id={"departement"} name="departement" className="mb-4 w-full" onChange={handleChange}>
+                            { //! select departements from the list that we got from the API
+                            departements.map(d => (
+                                    <option key={d.id} value={d.id}>{d.departement}</option>
+                            ))
+                            }
                         </Select>
                         <TextValidator
                             className="mb-4 w-full"
@@ -122,7 +129,7 @@ const NewUser = () => {
                             errorMessages={[
                                 'this field is required',
                                 'email is not valid',
-                            ]}
+                            ]} 
                         />
                     </Grid>
 
@@ -150,15 +157,16 @@ const NewUser = () => {
                                 "password didn't match",
                             ]}
                         />
+
                         <InputLabel htmlFor="role">Rôle</InputLabel>
                         <Select native
                             id="role" 
                             name="role"
                             className="mb-4 w-full" 
                             onChange={handleChange}>
-                            <option value={role}>Agent de l'entité</option>
-                            <option value={role}>Responsable de l'entité</option>
-                            <option value={role}>Responsable central</option>
+                            <option key="AE" value={role}>Agent de l'entité</option>
+                            <option key="RE" value={role}>Responsable de l'entité</option>
+                            <option key="RC" value={role}>Responsable central</option>
                         </Select>
                     </Grid>
                 </Grid>
@@ -172,4 +180,4 @@ const NewUser = () => {
     )
 }
 
-export default NewUser
+export default ModifyUser

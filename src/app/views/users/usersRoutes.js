@@ -18,7 +18,7 @@ const usersRoutes = [
         component: React.lazy(() => import('./NewDepartement')),
     },
     {
-        path: '/modifierUtilisateur',
+        path: '/modifierUtilisateur/:id',
         component: React.lazy(() => import('./ModifyUser')),
     },
 ]

@@ -30,6 +30,11 @@ const UsersTable = () => {
         setPage(0)
     }
 
+    const handleDelete = (event, id) => {
+        const res = axios.delete('http://127.0.0.1:8000/api/agent/'+id)
+        console.log(res)
+    }
+
 
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/agent')
@@ -97,12 +102,12 @@ const UsersTable = () => {
                                     {user.role}
                                 </TableCell>
                                 <TableCell className="px-0">
-                                    <IconButton>
+                                    <IconButton onClick={(e) => handleDelete(e, user.id)}>
                                         <Icon color="error">close</Icon>
                                     </IconButton>
                                 </TableCell>
                                 <TableCell className="px-2">
-                                    <IconButton href="/modifierUtilisateur">
+                                    <IconButton href={'/modifierUtilisateur/'.concat(user.id)}>
                                         <Icon color="primary">edit</Icon>
                                     </IconButton>
                                 </TableCell>
